@@ -1,28 +1,24 @@
 
-#ifndef CALC_ICE
-#define CALC_ICE
+#ifndef DYNA_ICE
+#define DYNA_ICE
 
-module Demo
+module DynamicApp
 {
-  enum operation { MIN, MAX, AVG };
-  
-  exception NoInput {};
+    struct Employee {
+        string name;
+        string birthday;
+        int age;
+    };
 
-  struct A
-  {
-    short a;
-    long b;
-    float c;
-    string d;
-  }
+    sequence<int> AgesSequence;
 
-  interface Calc
-  {
-    long add(int a, int b);
-    long subtract(int a, int b);
-    void op(A a1, short b1); //załóżmy, że to też jest operacja arytmetyczna ;)
-  };
+    interface BirthdayCheck {
+        bool isTodayEmployeeBirthday(Employee emp);
 
+        string getBirthdayWishes(string name);
+
+        int predictNextBirthdayAge(AgesSequence previousAgesList);
+    };
 };
 
 #endif

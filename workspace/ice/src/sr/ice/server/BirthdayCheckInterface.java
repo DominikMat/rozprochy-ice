@@ -1,45 +1,37 @@
 package sr.ice.server;
 
-import Demo.A;
-import Demo.Calc;
+import DynamicApp.BirthdayCheck;
+import DynamicApp.Employee;
 import com.zeroc.Ice.Current;
 
-public class CalcI implements Calc {
-	private static final long serialVersionUID = -2448962912780867770L;
-	long counter = 0;
+public class BirthdayCheckInterface implements BirthdayCheck {
 
 	@Override
-	public long add(int a, int b, Current __current) {
-		System.out.println("ADD: a = " + a + ", b = " + b + ", result = " + (a + b));
-
-		if (a > 1000 || b > 1000) {
-			try {
-				Thread.sleep(6000);
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-			}
+	public boolean isTodayEmployeeBirthday(Employee emp, Current current) {
+		// assume date format YYYY-MM-DD
+		if (emp.birthday == null || emp.birthday.length() < 10) {
+			System.err.println("Passed birthday string is null, too short, or too long (" + emp.birthday + " expected YYYY-MM-DD");
+			return false;
 		}
 
-		if (__current.ctx.values().size() > 0) {
-			System.out.println("There are some properties in the context");
-		}
+		// parse date
+		// YYYY-MM-DD -> 0123 (Y), 4 (-), 56 (M), 7 (-), 89 (D)
+		String monthStr = emp.birthday.substring(5, 7);
+		String dayStr = emp.birthday.substring(8, 10);
 
-		return a + b;
+		// compare to today
+		java.time.LocalDate today = java.time.LocalDate.now();
+		return Integer.parseInt(monthStr) == today.getMonthValue()
+				&& Integer.parseInt(dayStr) == today.getDayOfMonth();
 	}
 
 	@Override
-	public long subtract(int a, int b, Current __current) {
-		return 0;
+	public String getBirthdayWishes(String name, Current current) {
+		return "Happy birthday to you, " + name + " \n - xoxo BirthdayCheckSystem  :)";
 	}
 
-
 	@Override
-	public /*synchronized*/ void op(A a1, short b1, Current current) {
-		System.out.println("OP" + (++counter));
-		try {
-			Thread.sleep(500);
-		} catch (java.lang.InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
+	public int predictNextBirthdayAge(int[] previousAgesList, Current current) {
+		return previousAgesList[previousAgesList.length - 1] + 1; // proof of this equation simplification is left as an exercise to the reader
 	}
 }

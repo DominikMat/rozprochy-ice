@@ -1,0 +1,10 @@
+services:
+  middleware2026-lab:
+    build: .
+    container_name: iceI2
+    volumes:
+      - ./workspace:/workspace
+    ports:
+      - "10010:10010/tcp"  		# Ice
+      - "10010:10010/udp"  		# Ice
+    tty: true
